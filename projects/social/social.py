@@ -1,4 +1,5 @@
 import random
+from util import Stack, Queue  # These may come in handy
 
 class User:
     def __init__(self, name):
@@ -77,6 +78,45 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+                # use BFT to get to each person in the connected component
+        # use BFS to get to the shortest path to each component
+
+        def bfs(starting_vertex, destination_vertex):
+            queue = Queue()
+            queue.enqueue([starting_vertex])
+            # Create a Set to store visited vertices
+            visited = set()
+            # While the queue is not empty...
+            while queue.size() > 0:
+                # Dequeue the first PATH
+                path = queue.dequeue()
+                # Grab the last vertex from the PATH
+                vertex = path[-1]
+                # If that vertex has not been visited...
+                if vertex not in visited:
+                    # CHECK IF IT'S THE TARGET
+                    visited.add(vertex) # Mark it as visited...
+                    if vertex == destination_vertex:
+                        return path # IF SO, RETURN PATH
+                    else:# Then add A PATH TO its neighbors to the back of the queue
+                        for x in self.friendships[vertex]:
+                            # _COPY_ THE PATH
+                            # APPEND THE NEIGHOR TO THE BACK
+                            queue.enqueue([*path, x])
+            return [starting_vertex, destination_vertex]
+
+        #USE bft
+        q = Queue()
+        q.enqueue(self.friendships[user_id]) #difrent paramiter
+        visited = {}
+
+        while q.size() > 0:# Repeat until queue is empty
+            v = q.dequeue() # Dequeue first vert
+            for next_vert in v: # retruned values from above
+                if next_vert not in visited and next_vert != user_id:
+                    visited[next_vert] = bfs(user_id, next_vert)
+                    q.enqueue(self.friendships[next_vert])
+
         return visited
 
 
